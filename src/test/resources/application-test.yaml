@@ -1,0 +1,25 @@
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: trace
+management:
+  endpoints:
+    enabled: false
+    enabled-by-default: false
+spring:
+  datasource:
+    username: exampleapp
+    password: exampleapp
+    url: jdbc:postgresql://localhost:5432/exampleapp?currentSchema=public
+    driverClassName: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+      show_sql: true
+      use_sql_comments: true
+      format_sql: true
+  liquibase:
+    dropFirst: true
+    enabled: true
+    changeLog: classpath*:db/changelog/liquibase-changelog.yaml

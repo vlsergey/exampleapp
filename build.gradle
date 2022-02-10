@@ -1,0 +1,199 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'javax.annotation:javax.annotation-api:1.3.2'
+        classpath 'org.springframework.boot:spring-boot-gradle-plugin:2.4.5'
+    }
+}
+
+plugins {
+    id 'eclipse'
+    id 'java'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id "io.github.vlsergey.spring-data-rest-utils" version "0.45.1"
+    id "org.openapi.generator" version "5.3.0"
+    id 'net.researchgate.release' version '2.8.1'
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url = uri("https://jitpack.io")
+    }
+}
+
+ext {
+    hibernateVersion = '5.5.7.Final'
+    jacksonVersion = '2.12.5'
+    junitPlatformVersion = '1.8.0'
+    junitVersion = '5.8.0'
+    lombokVersion = '1.18.20'
+    queryDslVersion = '4.4.0'
+    springBootVersion = '2.5.4'
+    springVersion = '5.3.9'
+}
+
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+
+group 'com.github.vlsergey'
+
+compileJava {
+    options.debugOptions.debugLevel = 'source,vars,lines'
+    options.encoding = 'UTF-8'
+    options.release = 11
+}
+
+tasks.withType(JavaCompile) {
+    System.setProperty("file.encoding", "UTF-8")
+}
+
+// Execute with generateOpenAPIForSpringDataREST task to regenerate DataApi file
+springdatarestutils {
+    addXCustomAnnotations = ['org.springframework.security.access.annotation.Secured']
+    addXJavaClassName = true
+    addXJavaComparable = true
+    addXLinkedEntity = true
+    basePackage = 'com.github.vlsergey.exampleapp.data'
+    info.get().with {
+        title = 'Report History Server Data API'
+    }
+    output = file('./src/main/resources/static/api/ataApi.yaml')
+    repositoryDetectionStrategy = 'ALL'
+    servers.set([new io.swagger.v3.oas.models.servers.Server().url('/api/data')])
+}
+
+dependencies {
+    compile group: 'com.querydsl', name: 'querydsl-jpa', version: queryDslVersion
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: lombokVersion
+    annotationProcessor("com.querydsl:querydsl-apt:${queryDslVersion}:jpa")
+    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: lombokVersion
+    annotationProcessor("org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}")
+
+    compile group: 'com.auth0', name: 'java-jwt', version: '3.18.1'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: jacksonVersion
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: jacksonVersion
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jacksonVersion
+    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: jacksonVersion
+    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8', version: jacksonVersion
+    compile group: 'com.github.gavlyukovskiy', name: 'datasource-proxy-spring-boot-starter', version: '1.7.1'
+    compile group: 'com.github.vlsergey', name: 'spring-data-entity-security', version: '0.4.0'
+    compile group: 'com.google.guava', name: 'guava', version: '30.1.1-jre'
+    compile group: 'com.querydsl', name: 'querydsl-apt', version: queryDslVersion
+    compile group: 'com.querydsl', name: 'querydsl-jpa', version: queryDslVersion
+    compile group: 'com.vladmihalcea', name: 'hibernate-types-55', version: '2.12.1'
+
+    compile group: 'commons-codec', name: 'commons-codec', version: '1.15'
+    compile group: 'commons-io', name: 'commons-io', version: '2.11.0'
+
+    compile group: 'io.swagger', name: 'swagger-annotations', version: '1.6.2'
+    compile group: 'io.swagger.core.v3', name: 'swagger-annotations', version: '2.1.10'
+
+    compile group: 'javax.annotation', name: 'javax.annotation-api', version: '1.3.2'
+
+    compile group: 'net.minidev', name: 'json-smart', version: '2.4.7'
+    compile group: 'net.sf.ehcache', name: 'ehcache', version: '2.10.9.2'
+
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
+    compile group: 'com.github.java-json-tools', name: 'json-schema-validator', version: "2.2.14"
+    compile group: 'org.hibernate', name: 'hibernate-core', version: hibernateVersion
+    compile group: 'org.hibernate', name: 'hibernate-ehcache', version: hibernateVersion
+    compile group: 'org.hibernate.validator', name: 'hibernate-validator', version: '6.2.0.Final'
+    compile group: 'org.liquibase', name: 'liquibase-core', version: '3.10.3'
+    compile group: 'org.openapitools', name: 'jackson-databind-nullable', version: '0.2.1'
+    compile group: 'org.postgresql', name: 'postgresql', version: '42.2.23'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-rest'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-hateoas'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-security'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-websocket'
+    compile group: 'org.springframework.security', name: 'spring-security-oauth2-client'
+    compile group: 'org.springframework.security', name: 'spring-security-oauth2-jose'
+    compile group: 'org.webjars', name: 'swagger-ui', version: '3.25.4'
+
+    // until included as dependency of spring-boot-starter-data-jpa
+    compile group: 'org.springframework.data', name: 'spring-data-jpa', version: '2.5.4'
+
+    testCompile group: 'com.querydsl', name: 'querydsl-jpa', version: queryDslVersion
+    testAnnotationProcessor("com.querydsl:querydsl-apt:${queryDslVersion}:jpa")
+
+    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter', version: junitVersion
+    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junitVersion
+    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junitVersion
+    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junitVersion
+    testCompile group: 'org.junit.platform', name: 'junit-platform-commons', version: junitPlatformVersion
+    testCompile group: 'org.junit.platform', name: 'junit-platform-engine', version: junitPlatformVersion
+
+    testCompile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: jacksonVersion
+    testCompile group: 'io.swagger.parser.v3', name: 'swagger-parser-v3', version: '2.0.20'
+    testCompile group: 'net.ttddyy', name: 'datasource-proxy', version: '1.6'
+    testCompile group: 'org.projectlombok', name: 'lombok', version: lombokVersion
+    testCompile group: 'com.querydsl', name: 'querydsl-jpa', version: queryDslVersion
+    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
+    testCompile group: 'org.springframework.security', name: 'spring-security-test'
+
+    testAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: lombokVersion
+    testAnnotationProcessor("com.querydsl:querydsl-apt:${queryDslVersion}:jpa")
+}
+
+task buildDataModel(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+    generatorName = "spring"
+    inputSpec = "$rootDir/src/main/resources/static/api.yaml".toString()
+    modelNameSuffix = "Dto"
+    modelPackage = "com.vlsergey.exampleapp.dto"
+    outputDir = "$buildDir/generated/api/".toString()
+    skipValidateSpec = true
+
+    configOptions = [
+            additionalModelTypeAnnotations: "\n" +
+                    "@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_DEFAULT)\n" +
+                    '@com.fasterxml.jackson.annotation.JsonIgnoreProperties("$Schema")',
+            dateLibrary                   : "java8",
+            oas3                          : "true",
+            useBeanValidation             : "false",
+    ]
+
+    globalProperties = [
+            apis     : "false",
+            models   : "",
+            modelDocs: "false",
+    ]
+}
+
+compileJava.dependsOn buildDataModel
+sourceSets.main.java.srcDir "$buildDir/generated/api/src/main/java"
+sourceSets.main.resources.srcDir "$buildDir/generated/api/src/main/resources"
+
+// Classes generated by querydsl
+sourceSets.main.java.srcDir "build/generated/sources/annotationProcessor/java/main"
+
+test {
+    testLogging {
+        outputs.upToDateWhen { false }
+        showStandardStreams = true
+    }
+}
+
+bootJar {
+    launchScript()
+}
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.allJava
+    classifier = 'sources'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+release {
+    git {
+        requireBranch = 'master|v[0-9x\\.]+'
+    }
+}

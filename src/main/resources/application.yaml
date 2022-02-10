@@ -1,0 +1,55 @@
+# logging.level.org.springframework: DEBUG
+
+management:
+  endpoints:
+    enabled-by-default: true
+    jmx:
+      exposure:
+        include: "*"
+    web:
+      exposure:
+        include: "*"
+
+server:
+  servlet:
+    contextPath: /
+  use-forward-headers: true
+
+spring:
+  data:
+    rest:
+      basePath: /api/data
+      detectionStrategy: ALL
+  datasource:
+    driverClassName: org.postgresql.Driver
+  liquibase:
+    enabled: false
+  jackson:
+    serialization:
+      FAIL_ON_EMPTY_BEANS: false
+      WRITE_DATES_AS_TIMESTAMPS: false
+    deserialization:
+      FAIL_ON_UNKNOWN_PROPERTIES: false
+  jpa:
+    database: POSTGRESQL
+    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+    hibernate:
+      ddl-auto: validate
+      dialect: org.hibernate.dialect.PostgreSQL10Dialect
+    properties:
+      javax:
+        persistence:
+          sharedCache:
+            mode: ENABLE_SELECTIVE
+      hibernate:
+        cache:
+          # Use only query cache
+          use_second_level_cache: false
+          use_query_cache: true
+          region:
+            factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
+        order_inserts: true
+        order_updates: true
+        session.events.log.LOG_QUERIES_SLOWER_THAN_MS: 100
+        show_sql: false
+        types.print.banner: false

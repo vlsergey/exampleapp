@@ -1,0 +1,15 @@
+# Configurtion file for database-migration profile 
+
+logging.level:
+  liquibase: DEBUG
+  org.springframework.boot.autoconfigure.liquibase: DEBUG
+
+spring:
+  datasource:
+    driverClassName: org.postgresql.Driver
+  liquibase:
+    dropFirst: false
+    changeLog: classpath*:db/changelog/liquibase-changelog.yaml
+    enabled: true
+  main:
+    web-application-type: none

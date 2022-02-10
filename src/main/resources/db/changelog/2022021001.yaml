@@ -1,0 +1,93 @@
+databaseChangeLog:
+- logicalFilePath: 2022021001.yaml
+- changeSet:
+    id: 2022021001-01
+    author: vlsergey
+    changes:
+    - createTable:
+        tableName: students
+        columns:
+        - column:
+            name: student_id
+            type: uuid
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: pk_students_studentId
+        - column:
+            constraints:
+              nullable: false
+            name: created
+            type: timestamp
+        - column:
+            constraints:
+              nullable: false
+            name: updated
+            type: timestamp
+        - column:
+            constraints:
+              nullable: false
+            name: name
+            type: text
+- changeSet:
+    id: 2022021001-02
+    author: vlsergey
+    changes:
+    - createTable:
+        tableName: groups
+        columns:
+        - column:
+            name: group_id
+            type: uuid
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: pk_groups_groupId
+        - column:
+            constraints:
+              nullable: false
+            name: created
+            type: timestamp
+        - column:
+            constraints:
+              nullable: false
+            name: updated
+            type: timestamp
+        - column:
+            constraints:
+              nullable: false
+            name: name
+            type: text
+- changeSet:
+    id: 2022021001-03
+    author: vlsergey
+    changes:
+    - createTable:
+        tableName: groups_students
+        columns:
+        - column:
+            name: group_id
+            type: uuid
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: pk_groups_students_pk
+        - column:
+            name: student_id
+            type: uuid
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: pk_groups_students_pk
+- changeSet:
+    id: 2022021001-04
+    author: vlsergey
+    changes:
+    - createIndex:
+        tableName: groups_students
+        indexName: idx_gs_student_group
+        columns:
+        - column:
+            name: student_id
+        - column:
+            name: group_id
